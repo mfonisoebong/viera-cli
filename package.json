@@ -1,5 +1,5 @@
 {
-  "name": "template-cli",
+  "name": "viera-cli",
   "version": "1.0.0",
   "description": "",
   "type": "module",
@@ -8,7 +8,7 @@
     "start": "node index"
   },
   "bin": {
-    "template-cli": "./index.js"
+    "viera-cli": "./index.js"
   },
   "keywords": [],
   "author": "",

@@ -14,7 +14,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const CHOICES = fs.readdirSync(`${__dirname}/templates`);
 
 if (process.argv.includes("--version")) {
-  console.log(`template-cli version ${VERSION}`);
+  console.log(`viera-cli version ${VERSION}`);
   process.exit(0);
 }
 
