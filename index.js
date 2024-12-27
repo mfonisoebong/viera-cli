@@ -1,4 +1,4 @@
-#!/usr/bin/env/ node
+#!/usr/bin/env node
 
 import inquirer from "inquirer";
 import fs from "fs";
@@ -7,10 +7,16 @@ import { fileURLToPath } from "url";
 import createDirectoryContents from "./createDirectoryContents.js";
 import { exec } from "child_process";
 import { promisify } from "util";
+import { VERSION } from "./constants/index.js";
 
 const CURR_DIR = process.cwd();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CHOICES = fs.readdirSync(`${__dirname}/templates`);
+
+if (process.argv.includes("--version")) {
+  console.log(`template-cli version ${VERSION}`);
+  process.exit(0);
+}
 
 const QUESTIONS = [
   {
@@ -36,33 +42,68 @@ async function run() {
 
   fs.mkdirSync(`${CURR_DIR}/${projectName}`);
 
-  console.log("Domain expansion.....Purojekuto no sakusei 👉👈 👐");
+  console.log("Creating project structure...🤖");
 
   createDirectoryContents(templatePath, projectName);
 
-  const installAnswers = await inquirer
+  console.log("Project structure created! 🎉");
+
+  const install = await inquirer.prompt([
+    {
+      name: "install",
+      type: "confirm",
+      message: "Would you like to install dependencies?",
+    },
+  ]);
+
+  if (!install["install"]) {
+    console.log("Project is ready to go!");
+    process.exit(0);
+  }
+
+  const installConfig = await inquirer
     .prompt([
       {
-        name: "npm-install",
-        type: "confirm",
-        message: "Would you like to run npm install?",
+        name: "package-manager",
+        type: "list",
+        message: "Which package manager would you like to use?",
+        choices: ["npm", "pnpm", "yarn"],
       },
     ])
     .then((answers) => answers);
 
-  if (installAnswers["npm-install"]) {
-    console.log(
-      "Guaranteed installation....Domein no kakudai ga zōfuku sa reru...😠",
-    );
-    const execAsync = promisify(exec);
-    await execAsync("npm install", {
-      cwd: `${CURR_DIR}/${projectName}`,
-    });
+  const execAsync = promisify(exec);
+
+  switch (installConfig["package-manager"]) {
+    case "npm":
+      console.log("Installing dependencies with npm...🚀");
+      await execAsync("npm install", {
+        cwd: `${CURR_DIR}/${projectName}`,
+      });
+      break;
+
+    case "pnpm":
+      console.log("Installing dependencies with pnpm...🚀");
+      await execAsync("pnpm install", {
+        cwd: `${CURR_DIR}/${projectName}`,
+      });
+      break;
+
+    case "yarn":
+      console.log("Installing dependencies with yarn...🚀");
+      await execAsync("yarn install", {
+        cwd: `${CURR_DIR}/${projectName}`,
+      });
+      break;
+
+    default:
+      console.log("Installing dependencies with npm...🚀");
+      await execAsync("npm install", {
+        cwd: `${CURR_DIR}/${projectName}`,
+      });
   }
 
-  console.log(
-    "Project ready Senpai! Go and make waifu mummy proud 🥺 (Starts shaking boobs) ",
-  );
+  console.log("Project is ready to go!");
 }
 
 run();
