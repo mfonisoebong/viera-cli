@@ -4,4 +4,6 @@ This is a template CLI for scallfolding projects with your favourite tools.
 
 ## The available templates are:
 
-- NextJS (Under development 👷🚧)
+- NextJS
+- React + vite
+- Laravel
