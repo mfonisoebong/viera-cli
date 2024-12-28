@@ -8,7 +8,6 @@ import createDirectoryContents from "./createDirectoryContents.js";
 import { exec } from "child_process";
 import { promisify } from "util";
 import { VERSION } from "./constants/index.js";
-import { type } from "os";
 
 const CURR_DIR = process.cwd();
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -43,9 +42,10 @@ async function run() {
       type: "input",
       message: "Project name:",
       validate: function (input) {
-        if (/^([A-Za-z\-\_\d])+$/.test(input)) return true;
-        else
-          return "Project name may only include letters, numbers, underscores and hashes.";
+        if (/^([A-Za-z\-\_\d])+$/.test(input)) {
+          return true;
+        }
+        return "Project name may only include letters, numbers, underscores and hashes.";
       },
     },
   ];
@@ -125,13 +125,13 @@ async function run() {
 
     const install = promisify(exec);
 
-    console.log("Installing dependencies...");
+    console.log("Installing dependencies 👷📥...");
 
     await install(installCommand, {
       cwd: `${CURR_DIR}/${firstSetAnswers["name"]}`,
     });
 
-    console.log("Dependencies installed successfully!");
+    console.log("Dependencies installed successfully 📦!");
   }
 
   console.log("Project generated successfully!");
