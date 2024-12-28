@@ -1,0 +1,21 @@
+{
+  "name": "Vite React",
+  "description": "Vite React template",
+  "versions": [
+    {
+      "name": "default",
+      "templates": [
+        {
+          "path": "react-js",
+          "name": "Vite React JS",
+          "lang": "javascript"
+        },
+        {
+          "path": "react-ts",
+          "name": "Vite React TS",
+          "lang": "typescript"
+        }
+      ]
+    }
+  ]
+}
