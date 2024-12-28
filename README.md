@@ -24,6 +24,10 @@ npm link
 viera-cli --version
 ```
 
+## Upcoming features:
+- Customizable templates
+- Local templates
+
 
 
 
