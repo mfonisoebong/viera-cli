@@ -8,102 +8,133 @@ import createDirectoryContents from "./createDirectoryContents.js";
 import { exec } from "child_process";
 import { promisify } from "util";
 import { VERSION } from "./constants/index.js";
+import { type } from "os";
 
 const CURR_DIR = process.cwd();
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const CHOICES = fs.readdirSync(`${__dirname}/templates`);
 
 if (process.argv.includes("--version")) {
   console.log(`viera-cli version ${VERSION}`);
   process.exit(0);
 }
 
-const QUESTIONS = [
-  {
-    name: "project-choice",
-    type: "list",
-    message:
-      "Welps!! Seems like you have a new project at hand, Senpai. Owwwoi!  (Starts twerking) What template would you like to use?",
-    choices: CHOICES,
-  },
-  {
-    name: "project-name",
-    type: "input",
-    message: "Name of project? 😌",
-  },
-];
-
 async function run() {
-  const answers = await inquirer.prompt(QUESTIONS).then((answers) => answers);
+  const templates = fs.readdirSync(`${__dirname}/templates`);
 
-  const projectChoice = answers["project-choice"];
-  const projectName = answers["project-name"];
-  const templatePath = `${__dirname}/templates/${projectChoice}`;
+  const templateConfigs = templates.map((template) => {
+    const data = fs.readFileSync(
+      `${__dirname}/templates/${template}/config.json`,
+      {
+        encoding: "utf-8",
+      },
+    );
+    return JSON.parse(data);
+  });
 
-  fs.mkdirSync(`${CURR_DIR}/${projectName}`);
+  const firstSet = [
+    {
+      name: "template",
+      type: "list",
+      message: "What project template would you like to generate?",
+      choices: templateConfigs.map((config) => config.name),
+    },
+    {
+      name: "name",
+      type: "input",
+      message: "Project name:",
+      validate: function (input) {
+        if (/^([A-Za-z\-\_\d])+$/.test(input)) return true;
+        else
+          return "Project name may only include letters, numbers, underscores and hashes.";
+      },
+    },
+  ];
 
-  console.log("Creating project structure...🤖");
+  const firstSetAnswers = await inquirer.prompt(firstSet);
+  const versions = templateConfigs.find(
+    (config) => config.name === firstSetAnswers["template"],
+  ).versions;
 
-  createDirectoryContents(templatePath, projectName);
+  const secondSet = [
+    {
+      name: "version",
+      type: "list",
+      message: "What version would you like to use?",
+      choices: versions,
+    },
+  ];
 
-  console.log("Project structure created! 🎉");
+  const secondSetAnswers = await inquirer.prompt(secondSet);
+  const templatesList = versions.find(
+    (version) => version.name === secondSetAnswers["version"],
+  ).templates;
 
-  const install = await inquirer.prompt([
+  const thirdSet = [
+    {
+      name: "template",
+      type: "list",
+      message: "What template would you like to use?",
+      choices: templatesList,
+    },
+  ];
+
+  const thirdSetAnswers = await inquirer.prompt(thirdSet);
+  const selectedTemplate = templatesList.find(
+    (template) => template.name === thirdSetAnswers["template"],
+  );
+
+  const templatePath = `${__dirname}/${selectedTemplate.path}`;
+
+  fs.mkdirSync(`${CURR_DIR}/${firstSetAnswers["name"]}`);
+
+  createDirectoryContents(templatePath, firstSetAnswers["name"]);
+
+  const fourthSet = [
     {
       name: "install",
       type: "confirm",
       message: "Would you like to install dependencies?",
     },
-  ]);
+  ];
 
-  if (!install["install"]) {
-    console.log("Project is ready to go!");
-    process.exit(0);
-  }
+  const fourthSetAnswers = await inquirer.prompt(fourthSet);
 
-  const installConfig = await inquirer
-    .prompt([
+  if (fourthSetAnswers["install"]) {
+    const selectedConfig = templateConfigs.find(
+      (config) => config.name === firstSetAnswers["template"],
+    );
+    const packageManagers = selectedConfig.packageManagers;
+
+    const fifthSet = [
       {
-        name: "package-manager",
+        name: "packageManager",
         type: "list",
-        message: "Which package manager would you like to use?",
-        choices: ["npm", "pnpm", "yarn"],
+        message: "What package manager would you like to use?",
+        choices: packageManagers,
       },
-    ])
-    .then((answers) => answers);
+    ];
 
-  const execAsync = promisify(exec);
+    const fifthSetAnswers = await inquirer.prompt(fifthSet);
 
-  switch (installConfig["package-manager"]) {
-    case "npm":
-      console.log("Installing dependencies with npm...🚀");
-      await execAsync("npm install", {
-        cwd: `${CURR_DIR}/${projectName}`,
-      });
-      break;
+    const packageManager = fifthSetAnswers["packageManager"];
+    const selectedManager = packageManagers.find(
+      (manager) => manager.name === packageManager,
+    );
 
-    case "pnpm":
-      console.log("Installing dependencies with pnpm...🚀");
-      await execAsync("pnpm install", {
-        cwd: `${CURR_DIR}/${projectName}`,
-      });
-      break;
+    const installCommand = selectedManager.command;
 
-    case "yarn":
-      console.log("Installing dependencies with yarn...🚀");
-      await execAsync("yarn install", {
-        cwd: `${CURR_DIR}/${projectName}`,
-      });
-      break;
+    const install = promisify(exec);
 
-    default:
-      console.log("Installing dependencies with npm...🚀");
-      await execAsync("npm install", {
-        cwd: `${CURR_DIR}/${projectName}`,
-      });
+    console.log("Installing dependencies...");
+
+    await install(installCommand, {
+      cwd: `${CURR_DIR}/${firstSetAnswers["name"]}`,
+    });
+
+    console.log("Dependencies installed successfully!");
   }
 
-  console.log("Project is ready to go!");
+  console.log("Project generated successfully!");
 }
 
 run();

@@ -1,0 +1,35 @@
+{
+  "name": "Nextjs",
+  "description": "Nextjs template",
+  "versions": [
+    {
+      "name": "15",
+      "templates": [
+        {
+          "path": "templates/nextjs/15/nextjs-js",
+          "name": "Nextjs JS",
+          "lang": "javascript"
+        },
+        {
+          "path": "templates/nextjs/15/nextjs-ts",
+          "name": "Nextjs TS",
+          "lang": "typescript"
+        }
+      ]
+    }
+  ],
+  "packageManagers": [
+    {
+      "name": "npm",
+      "command": "npm install"
+    },
+    {
+      "name": "yarn",
+      "command": "yarn install"
+    },
+    {
+      "name": "pnpm",
+      "command": "pnpm install"
+    }
+  ]
+}

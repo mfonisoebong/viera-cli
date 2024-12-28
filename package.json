@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.24.0",
-    "inquirer": "^9.2.16"
+    "inquirer": "^9.2.16",
+    "zod": "^3.24.1"
   }
 }

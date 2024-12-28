@@ -1,0 +1,22 @@
+{
+  "name": "Laravel",
+  "description": "Laravel template",
+  "versions": [
+    {
+      "name": "11",
+      "templates": [
+        {
+          "path": "templates/laravel/11/laravel",
+          "name": "Laravel 11",
+          "lang": "php"
+        }
+      ]
+    }
+  ],
+  "packageManagers": [
+    {
+      "name": "composer",
+      "command": "composer install && php artisan migrate && php artisan key:generate"
+    }
+  ]
+}

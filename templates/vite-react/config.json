@@ -1,0 +1,35 @@
+{
+  "name": "Vite React",
+  "description": "Vite React template",
+  "versions": [
+    {
+      "name": "default",
+      "templates": [
+        {
+          "path": "templates/vite-react/react-js",
+          "name": "Vite React JS",
+          "lang": "javascript"
+        },
+        {
+          "path": "templates/vite-react/react-ts",
+          "name": "Vite React TS",
+          "lang": "typescript"
+        }
+      ]
+    }
+  ],
+  "packageManagers": [
+    {
+      "name": "npm",
+      "command": "npm install"
+    },
+    {
+      "name": "yarn",
+      "command": "yarn install"
+    },
+    {
+      "name": "pnpm",
+      "command": "pnpm install"
+    }
+  ]
+}
