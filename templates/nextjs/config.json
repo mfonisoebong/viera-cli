@@ -1,18 +1,18 @@
 {
-  "name": "Vite React",
-  "description": "Vite React template",
+  "name": "Nextjs",
+  "description": "Nextjs template",
   "versions": [
     {
-      "name": "default",
+      "name": "15",
       "templates": [
         {
-          "path": "templates/vite-react/react-js",
-          "name": "Vite React JS",
+          "path": "templates/nextjs/15/nextjs-js",
+          "name": "Nextjs JS",
           "lang": "javascript"
         },
         {
-          "path": "templates/vite-react/react-ts",
-          "name": "Vite React TS",
+          "path": "templates/nextjs/15/nextjs-ts",
+          "name": "Nextjs TS",
           "lang": "typescript"
         }
       ]
