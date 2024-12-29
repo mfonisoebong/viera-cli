@@ -16,7 +16,20 @@
   "packageManagers": [
     {
       "name": "composer",
-      "command": "composer install && php artisan migrate && php artisan key:generate"
+      "commands": [
+        {
+          "name": "install",
+          "command": "composer install"
+        },
+        {
+          "name": "migrate",
+          "command": "php artisan migrate"
+        },
+        {
+          "name": "key:generate",
+          "command": "php artisan key:generate"
+        }
+      ]
     }
   ]
 }

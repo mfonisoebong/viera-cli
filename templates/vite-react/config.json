@@ -21,15 +21,30 @@
   "packageManagers": [
     {
       "name": "npm",
-      "command": "npm install"
+      "commands": [
+        {
+          "name": "install",
+          "command": "npm install"
+        }
+      ]
     },
     {
       "name": "yarn",
-      "command": "yarn install"
+      "commands": [
+        {
+          "name": "install",
+          "command": "yarn install"
+        }
+      ]
     },
     {
       "name": "pnpm",
-      "command": "pnpm install"
+      "commands": [
+        {
+          "name": "install",
+          "command": "pnpm install"
+        }
+      ]
     }
   ]
 }
