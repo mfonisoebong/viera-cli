@@ -8,6 +8,8 @@ import createDirectoryContents from "./createDirectoryContents.js";
 import { exec } from "child_process";
 import { promisify } from "util";
 import { VERSION } from "./constants/index.js";
+import { zodValidator } from "./lib/utils/zod.js";
+import { templateConfigSchema } from "./lib/schema/templateConfig.js";
 
 const CURR_DIR = process.cwd();
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -51,9 +53,19 @@ async function run() {
   ];
 
   const firstSetAnswers = await inquirer.prompt(firstSet);
-  const versions = templateConfigs.find(
+
+  const config = templateConfigs.find(
     (config) => config.name === firstSetAnswers["template"],
-  ).versions;
+  );
+
+  const validate = zodValidator(templateConfigSchema, config);
+  if (validate.error) {
+    console.log("Error validating template config schema 🚨❗❗");
+    console.error(validate.error.errors);
+    process.exit(1);
+  }
+
+  const versions = config.versions;
 
   const secondSet = [
     {
@@ -121,15 +133,22 @@ async function run() {
       (manager) => manager.name === packageManager,
     );
 
-    const installCommand = selectedManager.command;
+    const installCommands = selectedManager.commands;
 
     const install = promisify(exec);
 
     console.log("Installing dependencies 👷📥...");
 
-    await install(installCommand, {
-      cwd: `${CURR_DIR}/${firstSetAnswers["name"]}`,
-    });
+    for (const command of installCommands) {
+      try {
+        await install(command.command, {
+          cwd: `${CURR_DIR}/${firstSetAnswers["name"]}`,
+        });
+      } catch (e) {
+        console.log("Error installing dependencies", e);
+        process.exit(1);
+      }
+    }
 
     console.log("Dependencies installed successfully 📦!");
   }
