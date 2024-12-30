@@ -12,7 +12,8 @@ Viera CLI is a command-line tool for scalfolding projects.
 For now a manual installation is required
 
 #### Prerequisites
-- Install nodejs 16+
+<!-- Node link -->
+- Install [nodejs 16+](https://nodejs.org)
 
 Since the cli is in dev mode, you have to clone this repo and install it manually.
 Run the following commands:
