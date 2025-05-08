@@ -3,7 +3,7 @@ module.exports = {
     node: true,
     es2021: true,
   },
-  extends: ["eslint:recommended", "plugin:prettier/recommend"],
+  extends: ["eslint:recommended"],
   overrides: [
     {
       env: {
@@ -18,8 +18,5 @@ module.exports = {
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
-  },
-  rules: {
-    "prettier/prettier": "error",
   },
 };
