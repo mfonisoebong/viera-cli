@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 
-import inquirer from "inquirer";
+import { exec } from "child_process";
 import fs from "fs";
+import inquirer from "inquirer";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import createDirectoryContents from "./createDirectoryContents.js";
-import { exec } from "child_process";
 import { promisify } from "util";
 import { VERSION } from "./constants/index.js";
-import { zodValidator } from "./lib/utils/zod.js";
+import createDirectoryContents from "./createDirectoryContents.js";
 import { templateConfigSchema } from "./lib/schema/templateConfig.js";
+import { zodValidator } from "./lib/utils/zod.js";
 
 const CURR_DIR = process.cwd();
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -44,7 +44,7 @@ async function run() {
       type: "input",
       message: "Project name:",
       validate: function (input) {
-        if (/^([A-Za-z\-\_\d])+$/.test(input)) {
+        if (/^([A-Za-z\-_\d])+$/.test(input)) {
           return true;
         }
         return "Project name may only include letters, numbers, underscores and hashes.";
